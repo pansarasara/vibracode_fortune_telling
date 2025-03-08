@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibraCode Fortune Teller</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            background-color: #3e2b2b; /* Brownish RPG-style background */
+            color: #d0c6b1; /* Light cream-colored text for contrast */
+        }
+
+        #fortune {
+            margin-top: 20px;
+            font-size: 1.5em;
+            padding: 20px;
+            border: 2px solid #4a2a2a; /* Darker border for the scroll effect */
+            background-color: #5e3a3a; /* Slightly darker background for the fortune result */
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 10px;
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: none; /* Initially hidden */
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            background-color: #4a2a2a; /* Dark brown button */
+            color: #d0c6b1;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+        }
+
+        button:hover {
+            background-color: #6b4c3b;
+        }
+
+        #description {
+            margin-top: 30px;
+            font-size: 1.2em;
+            color: #d0c6b1;
+            text-align: left;
+            display: inline-block;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        #disclaimer {
+            margin-top: 30px;
+            font-size: 0.8em; /* Smaller font for the legal disclaimer */
+            color: #ff6347; /* Bright contrasting color */
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* Scroll effect for the fortune box */
+        #fortune {
+            background-image: linear-gradient(135deg, #5e3a3a, #4a2a2a);
+            border: 2px solid #b29269;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            position: relative;
+        }
+
+        #fortune:before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background-color: #3e2b2b; /* Background color for the scroll effect */
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        #battery, #time {
+            font-size: 1.2em;
+            color: #d0c6b1;
+        }
+
+        #canvas {
+            display: none;
+        }
+
+        /* Footer Styling */
+        #footer {
+            margin-top: 50px;
+            font-size: 1em;
+            color: #bbb;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        #footer a {
+            color: #d0c6b1;
+            text-decoration: none;
+        }
+        
+    </style>
+</head>
+<body>
+    <h1>🔮 VibraCode Fortune Teller</h1>
+    <button onclick="getFortune()">📸 Take Screenshot & Get Fortune</button>
+    <p id="battery">🔋 Battery: Fetching...</p>
+    <p id="time">⏳ Time: Fetching...</p>
+    <p id="fortune"></p> <!-- This should now show the result properly -->
+    <canvas id="canvas"></canvas>
+
+    <!-- Added Explanation Section -->
+    <div id="description">
+        <h2>How It Works:</h2>
+        <p>This website combines two real-time inputs to provide you with a personalized fortune:</p>
+        <ul>
+            <li><strong>Battery Level:</strong> The percentage of your device's battery is used to influence the outcome of your fortune.</li>
+            <li><strong>Current Time (Seconds):</strong> The current second of the time helps determine which fortune will be revealed to you.</li>
+        </ul>
+        <p>Once these inputs are gathered, a fortune is selected from a set of 10 possible messages, giving you insights into areas like love, energy, challenges, and personal growth. You can even take a screenshot of your fortune and save it as a keepsake!</p>
+        <p><strong>Best Use:</strong> It is best to use this fortune teller when you wake up in the morning, at the first moment you touch your phone. For the best results, only use it once a day.</p>
+        <p><strong>Disclaimer:</strong> This fortune telling is just for game and fun purposes. Don't take it too seriously.</p>
+    </div>
+
+    <!-- Legal Disclaimer -->
+    <div id="disclaimer">
+        <p><strong>Legal Disclaimer:</strong> This website and its contents are for entertainment purposes only. The fortunes provided are generated randomly and have no bearing on real-life events. The creators of this website are not responsible for any decisions made based on the fortunes given. Use at your own discretion. By using this website, you agree to these terms.</p>
+    </div>
+
+    <!-- Footer with Created By Line -->
+    <div id="footer">
+        <p>Created by WPH-088-SENA</p>
+        <p>Made with help from ChatGPT!</p>
+    </div>
+
+    <script>
+        async function getFortune() {
+            const battery = await navigator.getBattery();
+            const batteryLevel = Math.floor(battery.level * 100);
+            const seconds = new Date().getSeconds();
+            const sum = (batteryLevel % 10) + (seconds % 10);
+            
+            const fortunes = [
+                "A cycle is completing. Something in your life is coming full circle—time to reflect and move forward!",
+                "Your energy is magnetic! People are drawn to you today—use this spark to attract opportunities.",
+                "Comfort and harmony surround you. Enjoy the peace—today is a day for stability and self-care.",
+                "Luck and prosperity are near! Stay open—good fortune may come in unexpected ways.",
+                "Love is in the air! This could be romance, friendship, or self-love—embrace the connections around you.",
+                "Not everything is what it seems. Look deeper—someone or something might surprise you today.",
+                "Stuck energy/boredom. Things might feel repetitive, but this is a chance to break the routine and refresh.",
+                "A minor rejection or delay. It might sting a little, but this is just making space for something better.",
+                "A challenge ahead! You might face an obstacle today, but overcoming it will make you stronger than before.",
+                "Someone might misunderstand you. Stay patient—clarify things, and it will turn into a learning moment."
+            ];
+
+            // Update Battery & Time display
+            document.getElementById("battery").innerText = `🔋 Battery: ${batteryLevel}%`;
+            document.getElementById("time").innerText = `⏳ Seconds: ${seconds}`;
+
+            // Show the fortune and update text
+            const fortuneText = fortunes[sum % 10];
+            document.getElementById("fortune").innerText = `🔮 ${fortuneText}`;
+            document.getElementById("fortune").style.display = 'block'; // Make fortune visible now
+
+            // Call Screenshot Function
+            takeScreenshot();
+        }
+
+        function takeScreenshot() {
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext("2d");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.font = "20px 'Courier New', Courier, monospace";
+            ctx.fillStyle = "black";
+            ctx.fillText(document.getElementById("fortune").innerText, 50, 50);
+            
+            const image = canvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.href = image;
+            link.download = "fortune.png";
+            link.click();
+        }
+    </script>
+</body>
+</html>
